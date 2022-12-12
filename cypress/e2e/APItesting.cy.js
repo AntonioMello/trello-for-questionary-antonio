@@ -7,7 +7,7 @@ describe('Interagir com Trello via API', () => {
         it('Cadastrar um board', () => {
             var boardName = "teste-board-Antonio";
 
-            
+
             // Request POST para criação de board do zero
             cy.request({
                 method: 'POST',
@@ -23,7 +23,7 @@ describe('Interagir com Trello via API', () => {
         it('Cadastrar um card', () => {
             var cardEntry = "teste-card-Antonio";
 
-            
+
             // Registrando alias para resgatar id do primeiro board ativo
             cy.request({
                 method: 'GET',
@@ -65,31 +65,31 @@ describe('Interagir com Trello via API', () => {
 
         it('Excluir um card', () => {
 
-           // Registrando alias para resgatar id do primeiro board ativo
-           cy.request({
-            method: 'GET',
-            url: `https://api.trello.com/1/members/me/boards?&key=${key}&token=${token}`,
-        }).as('getBoardId');
-
-        // Utilizando alias para resgatar o id do primeiro board
-        cy.get('@getBoardId').then((a) => {
-            let idBoard = a.body[0].id;
-            cy.log(a.body[0].id);
-
-            // Registrando alias para resgatar id do primeiro card do primeiro board
+            // Registrando alias para resgatar id do primeiro board ativo
             cy.request({
                 method: 'GET',
-                url: `https://api.trello.com/1/boards/${idBoard}/cards?key=${key}&token=${token}`,
-            }).as('getCardId');
-        });
+                url: `https://api.trello.com/1/members/me/boards?&key=${key}&token=${token}`,
+            }).as('getBoardId');
 
-        // Utilizando alias para resgatar o id do primeiro card do primeiro board
-        cy.get('@getCardId').then((c) => {
-            let idCard = c.body[0].id;
-            cy.log(idCard);
+            // Utilizando alias para resgatar o id do primeiro board
+            cy.get('@getBoardId').then((a) => {
+                let idBoard = a.body[0].id;
+                cy.log(a.body[0].id);
 
-            // Execução da request de deleção do card e validação do response
-            cy.request({
+                // Registrando alias para resgatar id do primeiro card do primeiro board
+                cy.request({
+                    method: 'GET',
+                    url: `https://api.trello.com/1/boards/${idBoard}/cards?key=${key}&token=${token}`,
+                }).as('getCardId');
+            });
+
+            // Utilizando alias para resgatar o id do primeiro card do primeiro board
+            cy.get('@getCardId').then((c) => {
+                let idCard = c.body[0].id;
+                cy.log(idCard);
+
+                // Execução da request de deleção do card e validação do response
+                cy.request({
                     method: 'DELETE',
                     url: `https://api.trello.com/1/cards/${idCard}?key=${key}&token=${token}`,
                 })
