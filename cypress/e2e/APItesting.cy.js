@@ -97,6 +97,17 @@ describe('Interagir com Trello via API', () => {
                     .should('deep.contain', {
                         "limits": {},
                     });
+
+                // Validação de chamada pelo id do cartão para comprovar remoção
+                cy.request({
+                    method: 'GET',
+                    url: `https://api.trello.com/1/cards/${idCard}?key=${key}&token=${token}`,
+                    failOnStatusCode: false
+                })
+                    .its('body')
+                    .should('not.deep.contain',{
+                        "id": idCard,
+                    });
             });
         });
 
@@ -120,6 +131,16 @@ describe('Interagir com Trello via API', () => {
                     .its('body')
                     .should('deep.contain', {
                         "_value": null,
+                    });
+
+                cy.request({
+                    method: 'GET',
+                    url: `https://api.trello.com/1/members/me/boards?&key=${key}&token=${token}`,
+                    failOnStatusCode: false
+                })
+                    .its('body')
+                    .should('not.deep.contain', {
+                        "id": idBoard,
                     });
             });
         });
